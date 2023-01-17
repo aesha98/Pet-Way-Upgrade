@@ -27,6 +27,9 @@ public class Vet {
         this.longitude = longitude;
     }
 
+    public Vet(String name, String address, String phoneNumber) {
+    }
+
     public String getName() {
         return name;
     }

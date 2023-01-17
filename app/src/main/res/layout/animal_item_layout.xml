@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="15dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="15dp"
+    android:background="#000000"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="15dp">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/animal_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#8BC6FC"
+            android:gravity="center_horizontal"
+            android:text="Animal Name"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:ignore="TextContrastCheck" />
+
+        <ImageView
+            android:id="@+id/places_img"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/animal_name"
+            android:layout_marginTop="2dp"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/breed_detail"
+            android:layout_width="319dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/places_img"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:gravity="center_horizontal"
+            android:text="Breed"
+            android:textAlignment="viewStart"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/date_added"
+            android:layout_width="319dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/breed_detail"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="0dp"
+            android:gravity="center_horizontal"
+            android:text="Date Added"
+            android:textAlignment="viewStart"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/places_img"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="336dp"
+            app:srcCompat="@drawable/ic_menu_camera" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/breed_detail"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="335dp"
+            app:srcCompat="@drawable/ic_menu_camera" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

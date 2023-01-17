@@ -8,67 +8,73 @@
 
     <Button
         android:id="@+id/btnLoginGoogle"
-        android:layout_width="224dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="36dp"
+        android:layout_width="311dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="44dp"
         android:background="@color/button_blue"
-        android:backgroundTint="#7A1A1A"
-        android:text="Login with Google"
+        android:backgroundTint="#3F51B5"
+        android:text="Sign Up"
+        android:textColor="#F4EBEB"
         app:cornerRadius="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnLoginPage"
-        android:layout_width="104dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="96dp"
+        android:layout_width="307dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="112dp"
         android:background="@color/button_blue"
-        android:backgroundTint="#7A1A1A"
+        android:backgroundTint="@color/button_gray"
         android:text="Login"
+        android:textColor="#3F51B5"
         app:cornerRadius="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.576"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
-        android:id="@+id/etName"
-        android:layout_width="240dp"
+        android:id="@+id/id_email"
+        android:layout_width="264dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:ems="10"
+        android:hint="Enter Email"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        android:text="Email"
+        android:textColorHint="#817171"
         app:layout_constraintBottom_toTopOf="@+id/etPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.653"
+        app:layout_constraintHorizontal_bias="0.693"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="42dp"
         android:layout_height="45dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="224dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="260dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/etPassword"
         app:srcCompat="@drawable/ic_menu_gallery" />
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="239dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="224dp"
+        android:layout_width="256dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="256dp"
         android:ems="10"
+        android:hint="Enter password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:textColorHint="#817171"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.655"
+        app:layout_constraintHorizontal_bias="0.658"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -76,16 +82,16 @@
         android:id="@+id/imageView2"
         android:layout_width="43dp"
         android:layout_height="44dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/imageView4"
-        app:layout_constraintEnd_toStartOf="@+id/etName"
+        app:layout_constraintEnd_toStartOf="@+id/id_email"
         app:srcCompat="@drawable/ic_menu_gallery" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_width="418dp"
+        android:layout_height="72dp"
         android:layout_marginTop="4dp"
         android:background="#92E0E4"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,16 +112,16 @@
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="392dp"
-        android:layout_height="256dp"
+        android:id="@+id/user_profile_image"
+        android:layout_width="350dp"
+        android:layout_height="214dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/etName"
+        app:layout_constraintBottom_toTopOf="@+id/id_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.414"
-        app:srcCompat="@color/black" />
+        app:srcCompat="@drawable/petwaylogo" />
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -125,18 +131,9 @@
         android:text="Remember Me"
         app:layout_constraintBottom_toTopOf="@+id/btnLoginPage"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.209"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
-
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="68dp"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_menu_gallery"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintTop_toBottomOf="@+id/etPassword"
+        app:layout_constraintVertical_bias="0.245" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
