@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">petway</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_categories">Learn</string>
+    <string name="menu_cart">Account</string>
+    <string name="menu_search">Places</string>
+
+
+    <string name="gender_unknown">Unknown</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="API_KEY">AIzaSyDhG-JUWwauViy9dSeaxdEtind_5Rm70x4</string>
+
+
+    <string name="home_second">Home Second</string>
+    <string name="title_activity_home2">Home2Activity</string>
+    <string name="title_activity_home_page">HomePageActivity</string>
+</resources>
