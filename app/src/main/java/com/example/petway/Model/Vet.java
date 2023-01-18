@@ -28,6 +28,9 @@ public class Vet {
     }
 
     public Vet(String name, String address, String phoneNumber) {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getName() {

@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 
 public class VetDetailActivity extends AppCompatActivity {
 
-    private TextView status, breed, gender, age, date, name, desc;
+    private TextView status, breed, gender, age, date, vetname, desc;
     private Button contactOwner;
     private ImageView pet_image;
 
@@ -34,7 +34,7 @@ public class VetDetailActivity extends AppCompatActivity {
         gender = findViewById(R.id.contact_txt);
         age = findViewById(R.id.distance_txt);
         date = findViewById(R.id.city_text);
-        name = findViewById(R.id.pet_name);
+        vetname = findViewById(R.id.vet_name);
 
         contactOwner = findViewById(R.id.btnAdopt);
         pet_image = findViewById(R.id.imageMain);
@@ -49,11 +49,13 @@ public class VetDetailActivity extends AppCompatActivity {
         String status_adoption = intent.getStringExtra("status");
         String phone = intent.getStringExtra("phone");
 
-        status.setText(status_adoption);
+        vetname.setText(name);
+        status.setText(breed_pet);
         breed.setText(breed_pet);
         gender.setText(gender_pet);
         age.setText(age_pet);
         date.setText(date_post);
+
 
         Glide.with(this)
                 .load(imageUrl)
@@ -61,7 +63,7 @@ public class VetDetailActivity extends AppCompatActivity {
 
         contactOwner.setOnClickListener(view -> {
             String phoneNumber = "tel:" + phone;
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
             callIntent.setData(Uri.parse(phoneNumber));
             if (callIntent.resolveActivity(getPackageManager()) !=null)
             {

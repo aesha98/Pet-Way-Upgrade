@@ -87,7 +87,7 @@
                                 android:layout_alignParentStart="true"
                                 android:gravity="center"
                                 android:padding="8dp"
-                                android:text="Location Map"
+                                android:text="Image Location"
                                 android:textStyle="bold" />
 
                         </RelativeLayout>
@@ -244,6 +244,7 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_weight="1"
+            android:background="#3F51B5"
             android:onClick="onClick"
             tools:ignore="TouchTargetSizeCheck">
 
@@ -257,10 +258,9 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:clickable="false"
-                android:drawableLeft="@drawable/ic_menu_gallery"
                 android:text="Contact Vet"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/button_gray" />
 
         </RelativeLayout>
     </LinearLayout>

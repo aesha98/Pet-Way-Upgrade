@@ -73,7 +73,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="336dp"
-            app:srcCompat="@drawable/ic_menu_camera" />
+            app:srcCompat="@drawable/ic_baseline_pets_24" />
 
         <ImageView
             android:id="@+id/imageView7"
@@ -83,7 +83,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="335dp"
-            app:srcCompat="@drawable/ic_menu_camera" />
+            app:srcCompat="@drawable/ic_baseline_calendar_month_24" />
 
     </RelativeLayout>
 

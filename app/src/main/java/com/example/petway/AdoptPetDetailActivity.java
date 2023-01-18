@@ -65,7 +65,7 @@ public class AdoptPetDetailActivity extends AppCompatActivity {
 
         contactOwner.setOnClickListener(view -> {
             String phoneNumber = "tel:" + phone;
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
             callIntent.setData(Uri.parse(phoneNumber));
             if (callIntent.resolveActivity(getPackageManager()) !=null)
             {

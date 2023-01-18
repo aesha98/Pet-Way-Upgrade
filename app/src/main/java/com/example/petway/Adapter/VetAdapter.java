@@ -38,11 +38,13 @@ public class VetAdapter extends RecyclerView.Adapter<VetAdapter.VetViewHolder> {
         Vet vet = vetList.get(position);
         holder.name.setText(vet.getName());
         holder.address.setText(vet.getAddress());
-        holder.placeid.setText(vet.getPhoneNumber());
+        holder.phone.setText(vet.getPhoneNumber());
         //holder.phoneNumber.setText(vet.getPhoneNumber());
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, VetDetailActivity.class);
-            intent.putExtra("vet", (CharSequence) vet);
+            intent.putExtra("name", vet.getName());
+            intent.putExtra("address", vet.getAddress());
+            intent.putExtra("phone", vet.getPhoneNumber());
             context.startActivity(intent);
         });
     }
@@ -53,13 +55,13 @@ public class VetAdapter extends RecyclerView.Adapter<VetAdapter.VetViewHolder> {
     }
 
     public static class VetViewHolder extends RecyclerView.ViewHolder {
-        TextView name, address, placeid;
+        TextView name, address, phone;
 
         public VetViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.vet_place);
             address = itemView.findViewById(R.id.place_address);
-            placeid = itemView.findViewById(R.id.place_distance);
+            phone = itemView.findViewById(R.id.place_distance);
         }
 
     }

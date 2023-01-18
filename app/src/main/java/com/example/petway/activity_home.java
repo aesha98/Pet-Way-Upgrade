@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.petway.Interface.OnNavigationItemSelected;
 import com.example.petway.Model.Animals;
 import com.example.petway.Model.Users;
+import com.example.petway.Model.Vet;
 import com.example.petway.viewholder.AnimalListHolder;
 import com.example.petway.viewholder.AnimalViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -47,6 +48,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class activity_home extends AppCompatActivity implements OnNavigationItemSelected {
@@ -60,6 +63,10 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
     private ActionBarDrawerToggle toggle;
     RecyclerView.LayoutManager layoutManager;
     FirebaseAuth mFirebaseAuth;
+    private  List<Animals> animalsList;
+
+    AlertDialog.Builder builder;
+
     private ActivityHomeBinding binding;
 
     @Override
@@ -72,6 +79,17 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
         toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
 
+//        FirebaseAuth.AuthStateListener authStateListener = new m.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                if (firebaseAuth.getCurrentUser() == null){
+//                    //Do anything here which needs to be done after signout is complete
+//                    signOutComplete();
+//                }
+//                else {
+//                }
+//            }
+//        };
         //actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_gallery);
         mFirebaseAuth = FirebaseAuth.getInstance();
         animal_ref = FirebaseDatabase.getInstance().getReference().child("Animals");
@@ -89,7 +107,6 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
         CircleImageView profile_img = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.user_profile_image);
 
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
-        assert user != null;
         String id = user.getUid();
         user_ref = FirebaseDatabase.getInstance().getReference("Users").child(id);
         //Use  DB reference object and add this method to access realtime data
@@ -135,8 +152,7 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
             switch (item.getItemId())
             {
                 case R.id.nav_cart:
-                    Intent intent = new Intent(activity_home.this, SettingsActivity.class);
-                    startActivity(intent);
+
                     Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
                     //close drawer
                     drawer.closeDrawer(GravityCompat.START);
@@ -151,7 +167,9 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
                     break;
 
                 case R.id.nav_categories:
-                    Toast.makeText(getApplicationContext(),"Settings",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(activity_home.this, SettingsActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
                     //close drawer
                     drawer.closeDrawer(GravityCompat.START);
 
@@ -159,22 +177,23 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
 
                 case R.id.nav_logout:
 
-                    new AlertDialog.Builder(getApplicationContext())
-                            .setTitle("Delete entry")
-                            .setMessage("Are you sure you want to Log out?")
+                        builder.setMessage("message").setTitle("LOG OUT");
 
+                            builder.setMessage("Are you sure you want to Logout?")
+                                    .setCancelable(false)
                             // Specifying a listener allows you to take an action before dismissing the dialog.
                             // The dialog is automatically dismissed when a dialog button is clicked.
                             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                mFirebaseAuth.signOut();
                                 Intent signout = new Intent(activity_home.this, MainActivity.class);
                                 startActivity(signout);
                             })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //  Action for 'NO' Button
+                                            dialog.cancel();
+                                        }
+                                    });
 
-                            // A null listener allows the button to dismiss the dialog and take no further action.
-                            .setNegativeButton(android.R.string.no, null)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
                     drawer.closeDrawer(GravityCompat.START);
                     break;
             }
@@ -207,6 +226,7 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Animals vet = dataSnapshot.getValue(Animals.class);
                                     Intent intent = new Intent(getApplicationContext(), AdoptPetDetailActivity.class);
+                                    intent.putExtra("animal_id", vet.getAnimal_id());
                                     intent.putExtra("animal_name", vet.getAnimal_name());
                                     intent.putExtra("breed", vet.getBreed());
                                     intent.putExtra("birth", vet.getBirth());

@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -92,7 +93,14 @@ public class SettingsActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     DatabaseReference UserRef;
     NavigationView navigationView;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
+    String SP_FNAME = "fName";
+    String SP_LNAME = "lName";
+    String SP_PHONE = "phone";
+    String SP_BIRTH = "birth";
+    String SP_IMAGE = "image";
 
 
     @Override
@@ -108,14 +116,14 @@ public class SettingsActivity extends AppCompatActivity {
         mName = findViewById(R.id.fName);
         mSpecies = findViewById(R.id.Lname);
         mBreed = findViewById(R.id.phone);
-       // mBirth = findViewById(R.id.birth);
-       // mPicture = findViewById(R.id.userPic);
+        mBirth = findViewById(R.id.birth);
+        mPicture = findViewById(R.id.userPic);
         mFabChoosePic = findViewById(R.id.choosePic);
         mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         userKey = user.getUid();
 
-        //UserRef = FirebaseDatabase.getInstance().getReference("Users");
+        UserRef = FirebaseDatabase.getInstance().getReference("Users");
         storage_img_ref = FirebaseStorage.getInstance().getReference().child("Profile Pictures");
         AnimalRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mGenderSpinner = findViewById(R.id.gender);
@@ -127,12 +135,9 @@ public class SettingsActivity extends AppCompatActivity {
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
-        mFabChoosePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseFile();
-            }
-        });
+        sharedPref = getSharedPreferences("user_setting",MODE_PRIVATE);
+        editor = sharedPref.edit();
+        mFabChoosePic.setOnClickListener(v -> chooseFile());
 
 
         setupSpinner();

@@ -17,12 +17,11 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog loading_bar;
     private FirebaseAuth mfirebaseauth;
     private FirebaseUser mfirebaseuser;
+    FirebaseAuth.AuthStateListener mAuthListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mfirebaseauth = FirebaseAuth.getInstance();
 
         join_now_btn = (Button) findViewById(R.id.btnLogin);
         login_btn = (Button) findViewById(R.id.btnRegister);
@@ -44,9 +43,20 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mfirebaseauth.getCurrentUser();
-        Intent intent = new Intent(MainActivity.this, activity_home.class);
-        startActivity(intent);
+        mfirebaseauth = FirebaseAuth.getInstance();
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in
+                FirebaseUser currentUser = mfirebaseauth.getCurrentUser();
+                Intent intent = new Intent(MainActivity.this, activity_home.class);
+                startActivity(intent);
+            } else {
+                // User is signed out
+
+            }
+        };
+
 
     }
     }

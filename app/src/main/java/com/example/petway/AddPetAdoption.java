@@ -32,6 +32,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.petway.Model.Animals;
+import com.example.petway.Model.Vet;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,8 +52,10 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,6 +69,8 @@ public class AddPetAdoption extends AppCompatActivity {
     private CircleImageView mPicture;
     private FloatingActionButton mFabChoosePic;
     private RadioButton cat, dog;
+    private final List<Animals> animalsList = new ArrayList<>();
+
 
     Calendar myCalendar = Calendar.getInstance();
 
@@ -410,13 +416,10 @@ public class AddPetAdoption extends AppCompatActivity {
         final StorageReference path = storage_img_ref.child(filepath.getLastPathSegment() + p_key + ".jpg");
         final UploadTask uploadTask = path.putFile(filepath);
 
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                String msg = e.toString();
-                Toast.makeText(AddPetAdoption.this, "Error : " + msg, Toast.LENGTH_SHORT).show();
-                // loading_bar.dismiss();
-            }
+        uploadTask.addOnFailureListener(e -> {
+            String msg = e.toString();
+            Toast.makeText(AddPetAdoption.this, "Error : " + msg, Toast.LENGTH_SHORT).show();
+            // loading_bar.dismiss();
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -461,6 +464,8 @@ public class AddPetAdoption extends AppCompatActivity {
 
                     AnimalRef.child(id).updateChildren(animal_map).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            Animals animals = new Animals(id, animal_name, breed, date, time, gender, birth, desc, download_img_url);
+                            animalsList.add(animals);
 
                             Toast.makeText(AddPetAdoption.this, "Pet is added successfully added for adoption", Toast.LENGTH_SHORT).show();
                         } else {
