@@ -184,37 +184,34 @@ public class NearVetActivity extends AppCompatActivity {
                 Log.i("placeID", placeId);
                 Log.i("name", name);
                 Log.i("address", address);
-                String placeid = prediction.getPlaceId();
-                getVetInfo(placeid, placesClient);
+
+                getVetInfo(placeId, placesClient, name, address);
 
             }
-            adapter.notifyDataSetChanged();
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("Places API", "Failed to retrieve autocomplete predictions: " + e.getMessage());
-            }
-        });
+        }).addOnFailureListener(e -> Log.d("Places API", "Failed to retrieve autocomplete predictions: " + e.getMessage()));
     }
 
-    private void getVetInfo (String placeid, PlacesClient placesClient)
-    {
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.PHONE_NUMBER);
-        FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeid, placeFields);
+        private void getVetInfo (String placeid, PlacesClient placesClient, String name, String address)
+        {
+            List<Place.Field> placeFields = Arrays.asList(Place.Field.PHONE_NUMBER);
+            FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeid, placeFields);
 
-        placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
-            Place place = response.getPlace();
-            String phoneNumber = place.getPhoneNumber();
-            //Add the places to your list
-            Vet vet = new Vet(place.getName(), place.getAddress(), place.getPhoneNumber());
-            vetList.add(vet);
-            Log.i("I", "Place phone number: " + phoneNumber);
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-                Log.e("TAG", "Place not found: " + apiException.getStatusCode());
-            }
-        });
-    }
+            placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
+                Place place = response.getPlace();
+                String phoneNumber = place.getPhoneNumber();
+               // place.getUserRatingsTotal();
+                //Add the places to your list
+                Vet vet = new Vet(name, address, place.getPhoneNumber());
+                vetList.add(vet);
+                Log.i("I", "Place phone number: " + phoneNumber);
+                adapter.notifyDataSetChanged();
+
+            }).addOnFailureListener((exception) -> {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
+                    Log.e("TAG", "Place not found: " + apiException.getStatusCode());
+                }
+            });
+        }
     }
 
