@@ -79,17 +79,6 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
         toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
 
-//        FirebaseAuth.AuthStateListener authStateListener = new m.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                if (firebaseAuth.getCurrentUser() == null){
-//                    //Do anything here which needs to be done after signout is complete
-//                    signOutComplete();
-//                }
-//                else {
-//                }
-//            }
-//        };
         //actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_gallery);
         mFirebaseAuth = FirebaseAuth.getInstance();
         animal_ref = FirebaseDatabase.getInstance().getReference().child("Animals");
@@ -177,22 +166,9 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
 
                 case R.id.nav_logout:
 
-                        builder.setMessage("message").setTitle("LOG OUT");
+                    mFirebaseAuth.signOut();
 
-                            builder.setMessage("Are you sure you want to Logout?")
-                                    .setCancelable(false)
-                            // Specifying a listener allows you to take an action before dismissing the dialog.
-                            // The dialog is automatically dismissed when a dialog button is clicked.
-                            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                Intent signout = new Intent(activity_home.this, MainActivity.class);
-                                startActivity(signout);
-                            })
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            //  Action for 'NO' Button
-                                            dialog.cancel();
-                                        }
-                                    });
+                    startActivity(new Intent(activity_home.this, MainActivity.class));
 
                     drawer.closeDrawer(GravityCompat.START);
                     break;
@@ -207,7 +183,8 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerOptions<Animals> options = new FirebaseRecyclerOptions.Builder<Animals>().setQuery(animal_ref, Animals.class).build();
+        FirebaseRecyclerOptions<Animals> options = new FirebaseRecyclerOptions.Builder<Animals>()
+                .setQuery(animal_ref, Animals.class).build();
 
         FirebaseRecyclerAdapter<Animals, AnimalViewHolder> adapter =
                 new FirebaseRecyclerAdapter<Animals, AnimalViewHolder>(options) {
@@ -220,31 +197,16 @@ public class activity_home extends AppCompatActivity implements OnNavigationItem
                         Picasso.get().load(animals.getImageUrl()).into(animalViewHolder.img_view);
                         //for the addition of animal to our cart
                         animalViewHolder.itemView.setOnClickListener(v -> {
-                            String id = animal_ref.getKey();
-                            animal_ref.child(id).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Animals vet = dataSnapshot.getValue(Animals.class);
-                                    Intent intent = new Intent(getApplicationContext(), AdoptPetDetailActivity.class);
-                                    intent.putExtra("animal_id", vet.getAnimal_id());
-                                    intent.putExtra("animal_name", vet.getAnimal_name());
-                                    intent.putExtra("breed", vet.getBreed());
-                                    intent.putExtra("birth", vet.getBirth());
-                                    intent.putExtra("imageUrl", vet.getImageUrl());
-                                    intent.putExtra("gender", vet.getGender());
-                                    intent.putExtra("date-posted",vet.getDate());
-                                    intent.putExtra("desc", vet.getDesc());
-                                    startActivity(intent);
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.e("Error", "onCancelled", databaseError.toException());
-                                }
-                            });
 
+                            String id = animals.getAnimal_id();
                             Intent intent = new Intent(activity_home.this, AdoptPetDetailActivity.class);
-                            intent.putExtra("pid", animals.getAnimal_id());
+                            intent.putExtra("key", id);
                             startActivity(intent);
+
+
+
+
+
                         });
                     }
 

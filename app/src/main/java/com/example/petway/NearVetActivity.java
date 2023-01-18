@@ -14,8 +14,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,14 +34,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.maps.android.SphericalUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +57,6 @@ public class NearVetActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted;
     public ActivityResultLauncher<String[]> locationPermissionRequest;
-    public String idpalce;
 
 
     @Override
@@ -145,7 +150,13 @@ public class NearVetActivity extends AppCompatActivity {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
                     // Use the Places API to search for nearby places
+                    Log.i("lat", String.valueOf(latitude));
+
                     searchNearbyPlaces(latitude, longitude);
+                }
+                else
+                {
+
                 }
             }
         });
@@ -184,7 +195,8 @@ public class NearVetActivity extends AppCompatActivity {
                 Log.i("placeID", placeId);
                 Log.i("name", name);
                 Log.i("address", address);
-
+               // Vet vet = new Vet(name, address, placeId);
+                //vetList.add(vet);
                 getVetInfo(placeId, placesClient, name, address);
 
             }
@@ -193,18 +205,50 @@ public class NearVetActivity extends AppCompatActivity {
 
         private void getVetInfo (String placeid, PlacesClient placesClient, String name, String address)
         {
-            List<Place.Field> placeFields = Arrays.asList(Place.Field.PHONE_NUMBER);
+            List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME,
+                    Place.Field.PHOTO_METADATAS, Place.Field.WEBSITE_URI,
+                    Place.Field.ADDRESS, Place.Field.PHONE_NUMBER);
+
             FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeid, placeFields);
 
             placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
                 Place place = response.getPlace();
                 String phoneNumber = place.getPhoneNumber();
-               // place.getUserRatingsTotal();
-                //Add the places to your list
-                Vet vet = new Vet(name, address, place.getPhoneNumber());
-                vetList.add(vet);
-                Log.i("I", "Place phone number: " + phoneNumber);
-                adapter.notifyDataSetChanged();
+                Uri websiteUri = place.getWebsiteUri();
+                String website = "";
+                if(websiteUri != null) {
+                    website = websiteUri.toString();
+                }
+                String image = "";
+
+                final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+                if (metadata == null || metadata.isEmpty()) {
+                    Log.w("TAG", "No photo metadata.");
+                    return;
+                }
+                PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+
+                // Create a FetchPhotoRequest object
+                FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
+                String finalWebsite = website;
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                    String imageUrl = getStringImage(bitmap);
+                    // Use the bitmap as you need
+                    Vet vet = new Vet(name, address, place.getPhoneNumber(), finalWebsite);
+                    vetList.add(vet);
+                    Log.i("I", "Place phone number: " + finalWebsite);
+                    Log.i("I", "Place phone number: " + phoneNumber);
+                    adapter.notifyDataSetChanged();
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        ApiException apiException = (ApiException) exception;
+                        int statusCode = apiException.getStatusCode();
+                        // Handle error with given status code.
+                        //...
+                    }
+                });
+
 
             }).addOnFailureListener((exception) -> {
                 if (exception instanceof ApiException) {
@@ -213,5 +257,13 @@ public class NearVetActivity extends AppCompatActivity {
                 }
             });
         }
+
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
     }
 

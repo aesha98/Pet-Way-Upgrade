@@ -464,7 +464,7 @@ public class AddPetAdoption extends AppCompatActivity {
 
                     AnimalRef.child(id).updateChildren(animal_map).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Animals animals = new Animals(id, animal_name, breed, date, time, gender, birth, desc, download_img_url);
+                            Animals animals = new Animals(id, animal_name, date, time, gender, breed,birth, desc, download_img_url);
                             animalsList.add(animals);
 
                             Toast.makeText(AddPetAdoption.this, "Pet is added successfully added for adoption", Toast.LENGTH_SHORT).show();

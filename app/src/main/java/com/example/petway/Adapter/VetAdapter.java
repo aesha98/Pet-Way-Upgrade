@@ -45,6 +45,8 @@ public class VetAdapter extends RecyclerView.Adapter<VetAdapter.VetViewHolder> {
             intent.putExtra("name", vet.getName());
             intent.putExtra("address", vet.getAddress());
             intent.putExtra("phone", vet.getPhoneNumber());
+            intent.putExtra("websiteURI", vet.getWebsite());
+           // intent.putExtra("distance");
             context.startActivity(intent);
         });
     }

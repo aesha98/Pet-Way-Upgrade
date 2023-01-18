@@ -96,11 +96,18 @@ public class SettingsActivity extends AppCompatActivity {
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
 
+    String fname;
+    String lname;
+    String phone;
+    String bdate;
+    String image;
+
     String SP_FNAME = "fName";
     String SP_LNAME = "lName";
     String SP_PHONE = "phone";
     String SP_BIRTH = "birth";
     String SP_IMAGE = "image";
+    String SP_GENDER = "gender";
 
 
     @Override
@@ -128,6 +135,14 @@ public class SettingsActivity extends AppCompatActivity {
         AnimalRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mGenderSpinner = findViewById(R.id.gender);
       //  mBirth = findViewById(R.id.birth);
+        sharedPref = getSharedPreferences("setting", MODE_PRIVATE);
+        editor = sharedPref.edit();
+
+
+        mName.setText(sharedPref.getString(SP_FNAME, fname));
+        mSpecies.setText(sharedPref.getString(SP_FNAME, lname));
+        mBreed.setText(sharedPref.getString(SP_FNAME, phone));
+
 
         mBirth.setFocusableInTouchMode(false);
         mBirth.setFocusable(false);
@@ -135,22 +150,12 @@ public class SettingsActivity extends AppCompatActivity {
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
-        sharedPref = getSharedPreferences("user_setting",MODE_PRIVATE);
-        editor = sharedPref.edit();
         mFabChoosePic.setOnClickListener(v -> chooseFile());
 
 
         setupSpinner();
-        Intent intent = getIntent();
-        id = intent.getIntExtra("id", 0);
-        name = intent.getStringExtra("fname");
-        species = intent.getStringExtra("lname");
-        breed = intent.getStringExtra("pNumber");
-        birth = intent.getStringExtra("birth");
-        gender = intent.getIntExtra("gender", 0);
 
         setDataFromIntentExtra();
-
     }
 
     private void setDataFromIntentExtra() {
@@ -158,10 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (id != 0) {
             readMode();
             getSupportActionBar().setTitle("Edit " + name.toString());
-            mName.setText(name);
-            mSpecies.setText(species);
-            mBreed.setText(breed);
-            mBirth.setText(birth);
+
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -170,19 +172,20 @@ public class SettingsActivity extends AppCompatActivity {
             requestOptions.error(R.drawable.profile);
 
             Glide.with(SettingsActivity.this)
-                    .load(picture)
+                    .load(sharedPref.getString(SP_IMAGE, picture))
                     .apply(requestOptions)
                     .into(mPicture);
 
             switch (gender) {
                 case GENDER_MALE:
-                    mGenderSpinner.setSelection(1);
+                    mGenderSpinner.setSelection(sharedPref.getInt(SP_GENDER,1));
                     break;
                 case GENDER_FEMALE:
-                    mGenderSpinner.setSelection(2);
+                    mGenderSpinner.setSelection(sharedPref.getInt(SP_GENDER,2));
                     break;
                 default:
-                    mGenderSpinner.setSelection(0);
+
+                    mGenderSpinner.setSelection(sharedPref.getInt(SP_GENDER,0));
                     break;
             }
 
@@ -202,10 +205,16 @@ public class SettingsActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.gender_male))) {
+                        editor.putInt(SP_GENDER, 1);
+                        editor.commit();
                         mGender = GENDER_MALE;
                     } else if (selection.equals(getString(R.string.gender_female))) {
+                        editor.putInt(SP_GENDER, 2);
+                        editor.commit();
                         mGender = GENDER_FEMALE;
                     } else {
+                        editor.putInt(SP_GENDER, 0);
+                        editor.commit();
                         mGender = GENDER_UNKNOWN;
                     }
                 }
@@ -244,7 +253,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(mName, InputMethodManager.SHOW_IMPLICIT);
-
                 action.findItem(R.id.menu_edit).setVisible(false);
                 action.findItem(R.id.menu_delete).setVisible(false);
                 action.findItem(R.id.menu_save).setVisible(true);
@@ -259,12 +267,7 @@ public class SettingsActivity extends AppCompatActivity {
                             TextUtils.isEmpty(mBirth.getText().toString())) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                         alertDialog.setMessage("Please complete the field!");
-                        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        alertDialog.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
                         alertDialog.show();
                     } else {
                         validateUserData();
@@ -309,25 +312,21 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            setBirth();
-        }
-
+    DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+        // TODO Auto-generated method stub
+        myCalendar.set(Calendar.YEAR, year);
+        myCalendar.set(Calendar.MONTH, monthOfYear);
+        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        setBirth();
     };
 
     private void setBirth() {
         String myFormat = "dd MMMM yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-        mBirth.setText(sdf.format(myCalendar.getTime()));
+        bdate = sdf.format(myCalendar.getTime());
+        editor.putString(SP_FNAME, bdate);
+        editor.commit();
+        mBirth.setText(sharedPref.getString(SP_FNAME, bdate));
     }
 
     public String getStringImage(Bitmap bmp) {
@@ -382,12 +381,16 @@ public class SettingsActivity extends AppCompatActivity {
         {
             genderPet = "Male";
             picture = getStringImage(bitmap);
+            editor.putString(SP_IMAGE, picture);
+            editor.commit();
             storeUserInfo(name, genderPet, breed, birth, category);
         }
         else
         {
             genderPet = "Female";
             picture = getStringImage(bitmap);
+            editor.putString(SP_IMAGE, picture);
+            editor.commit();
             storeUserInfo(fname, lname, pNumber, birth, genderPet);
         }
     }
@@ -415,30 +418,24 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(SettingsActivity.this, "Error : " + msg, Toast.LENGTH_SHORT).show();
                 // loading_bar.dismiss();
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(SettingsActivity.this, "image upload successes!", Toast.LENGTH_SHORT).show();
-                Task<Uri> url_task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-                        download_img_url = path.getDownloadUrl().toString();
-                        return path.getDownloadUrl();
+        }).addOnSuccessListener(taskSnapshot -> {
+            Toast.makeText(SettingsActivity.this, "image upload successes!", Toast.LENGTH_SHORT).show();
+            Task<Uri> url_task = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
                     }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(SettingsActivity.this, "Getting image url successfully", Toast.LENGTH_SHORT).show();
-                            download_img_url = task.getResult().toString();
-                            saveUserInfoToDatabese(fName, lname, pNumer, birth, gender, download_img_url);
-                        }
-                    }
-                });
-            }
+                    download_img_url = path.getDownloadUrl().toString();
+                    return path.getDownloadUrl();
+                }
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(SettingsActivity.this, "Getting image url successfully", Toast.LENGTH_SHORT).show();
+                    download_img_url = task.getResult().toString();
+                    saveUserInfoToDatabese(fName, lname, pNumer, birth, gender, download_img_url);
+                }
+            });
         });
     }
 
@@ -461,10 +458,19 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                editor.putString(SP_FNAME, fname);
+                                editor.putString(SP_LNAME,lname);
+                                editor.putString(SP_BIRTH, pNumer);
+                                editor.putString(SP_PHONE,"0186674308");
+                                editor.commit();
 
                                 Toast.makeText(SettingsActivity.this, "User details updated successfully", Toast.LENGTH_SHORT).show();
                             } else {
-
+                                editor.putString(SP_FNAME, "");
+                                editor.putString(SP_LNAME,"");
+                                editor.putString(SP_BIRTH, "");
+                                editor.putString(SP_PHONE,"");
+                                editor.commit();
                                 String msg = task.getException().toString();
                                 Toast.makeText(SettingsActivity.this, "Error : " + msg, Toast.LENGTH_SHORT).show();
                             }

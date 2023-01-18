@@ -1,5 +1,6 @@
 package com.example.petway;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,12 +13,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.petway.Model.Animals;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class AdoptPetDetailActivity extends AppCompatActivity {
 
     private TextView status, breed, gender, age, date, name, desc;
     private Button contactOwner;
     private ImageView pet_image;
+    private Animals data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,31 +50,40 @@ public class AdoptPetDetailActivity extends AppCompatActivity {
         contactOwner = findViewById(R.id.btnAdopt);
         pet_image = findViewById(R.id.imageMain);
 
-        Intent intent = getIntent();
-        String animal_name = intent.getStringExtra("animal_name");
-        String breed_pet = intent.getStringExtra("breed");
-        String gender_pet = intent.getStringExtra("gender");
-        String imageUrl = intent.getStringExtra("imageUrl");
-        String age_pet = intent.getStringExtra("birth");
-        String date_post = intent.getStringExtra("date-posted");
-        String desc_text = intent.getStringExtra("desc");
-        // String status_adoption = intent.getStringExtra("status");
-        String phone = intent.getStringExtra("phone");
+        String key = getIntent().getStringExtra("key");
 
-        name.setText(animal_name);
-        status.setText("available");
-        breed.setText(breed_pet);
-        gender.setText(gender_pet);
-        age.setText(age_pet);
-        date.setText(date_post);
-        desc.setText(desc_text);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Animals").child(key);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                data = dataSnapshot.getValue(Animals.class);
+                // in the data object
 
-        Glide.with(this)
-                .load(imageUrl)
-                .into(pet_image);
+                name.setText(data.getAnimal_name());
+                status.setText("available");
+                breed.setText(data.getBreed());
+                gender.setText(data.getGender());
+                age.setText(data.getBirth());
+                date.setText(data.getDate());
+                desc.setText(data.getDesc());
+                Picasso.get().load(data.getImageUrl()).fit().into(pet_image);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle the error
+            }
+        });
+
+//
+//        Glide.with(this)
+//                .load(data.getImageUrl())
+//                .into(pet_image);
+
 
         contactOwner.setOnClickListener(view -> {
-            String phoneNumber = "tel:" + phone;
+            String phoneNumber = "tel:" + "0186674308";
             Intent callIntent = new Intent(Intent.ACTION_DIAL);
             callIntent.setData(Uri.parse(phoneNumber));
             if (callIntent.resolveActivity(getPackageManager()) !=null)
@@ -79,4 +98,7 @@ public class AdoptPetDetailActivity extends AppCompatActivity {
         });
 
     }
-}
+    }
+
+
+

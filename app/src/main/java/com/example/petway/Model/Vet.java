@@ -9,6 +9,7 @@ public class Vet {
     private String placeID;
     private String ImageUrl;
     private String distance;
+    private String website;
     private double latitude;
     private double longitude;
 
@@ -21,16 +22,25 @@ public class Vet {
         this.city = city;
         this.phoneNumber = phoneNumber;
         this.placeID = placeID;
-        ImageUrl = imageUrl;
+        this.ImageUrl = imageUrl;
         this.distance = distance;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public Vet(String name, String address, String phoneNumber) {
+    public Vet(String name, String address, String phoneNumber, String website) {
         this.name = name;
         this.address = address;
+        this.website = website;
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getName() {

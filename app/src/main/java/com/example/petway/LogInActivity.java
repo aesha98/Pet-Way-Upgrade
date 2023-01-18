@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,15 +58,13 @@ public class LogInActivity extends AppCompatActivity {
         input_password = (EditText) findViewById(R.id.id_email);
         input_phone_number = (EditText) findViewById(R.id.etPassword);
 
-        loading_bar = new ProgressDialog(this);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
         check_box_remember_me = (CheckBox) findViewById(R.id.checkBox);
         sharedPref = getSharedPreferences("userPref", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
         input_password.setText(sharedPref.getString(SP_PASSWORD, pass));
         input_phone_number.setText(sharedPref.getString(SP_EMAIL,username));
         check_box_remember_me.setChecked(sharedPref.getBoolean(SP_CHECKBOX, false));
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         check_box_remember_me.setOnCheckedChangeListener((compoundButton, b) -> {
             editor.putBoolean(SP_CHECKBOX,b);
@@ -72,13 +72,10 @@ public class LogInActivity extends AppCompatActivity {
         });
 
 
-        login_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parent_database_name = "Users";
-                loginUser();
+        login_btn.setOnClickListener(view -> {
+            parent_database_name = "Users";
+            loginUser();
 
-            }
         });
     }
 
@@ -95,16 +92,25 @@ public class LogInActivity extends AppCompatActivity {
 
             AlertDialog dialog = builder.create();
             dialog.show();
-        } else {
-            mFirebaseAuth.signInWithEmailAndPassword(username, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    AllowAccessToAccount(username, pass);
-                    gotomainpage();
-                }
+        }
+            if (check_box_remember_me.isChecked())
+            {
+                editor.putString(SP_EMAIL, username);
+                editor.putString(SP_PASSWORD,pass);
+                editor.commit();
+            }
+            else
+            {
+                editor.putString(SP_EMAIL,"");
+                editor.putString(SP_PASSWORD,"");
+                editor.commit();
+            }
+            mFirebaseAuth.signInWithEmailAndPassword(username, pass).addOnCompleteListener(task -> {
+                //AllowAccessToAccount(username, pass);
+                gotomainpage();
             });
         }
-    }
+
 
     private void AllowAccessToAccount(final String email, final String password) {
 
@@ -129,15 +135,14 @@ public class LogInActivity extends AppCompatActivity {
 
                          if(parent_database_name.equals("Users")){
                                 Toast.makeText(LogInActivity.this, "Log in success ", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LogInActivity.this, activity_home.class);
-                                // Prevalent.online_user=usersdata;
-                                startActivity(intent);
                             }
                         }
                     }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LogInActivity.this, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show();
 
             }
 
@@ -148,8 +153,6 @@ public class LogInActivity extends AppCompatActivity {
     private void gotomainpage()
     {
         Intent intent = new Intent(LogInActivity.this, activity_home.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     };
 }

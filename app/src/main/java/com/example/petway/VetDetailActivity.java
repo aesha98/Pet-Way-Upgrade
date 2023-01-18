@@ -33,7 +33,6 @@ public class VetDetailActivity extends AppCompatActivity {
         breed = findViewById(R.id.city_text);
         gender = findViewById(R.id.contact_txt);
         age = findViewById(R.id.distance_txt);
-        date = findViewById(R.id.city_text);
         vetname = findViewById(R.id.vet_name);
 
         contactOwner = findViewById(R.id.btnAdopt);
@@ -41,20 +40,17 @@ public class VetDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
-        String breed_pet = intent.getStringExtra("address");
-        String gender_pet = intent.getStringExtra("phone");
-        String imageUrl = intent.getStringExtra("imageUrl");
-        String age_pet = intent.getStringExtra("age");
-        String date_post = intent.getStringExtra("date-posted");
-        String status_adoption = intent.getStringExtra("status");
+        String address = intent.getStringExtra("address");
         String phone = intent.getStringExtra("phone");
+        String imageUrl = intent.getStringExtra("imageUrl");
+        String website = intent.getStringExtra("websiteURI");
+        String distance = intent.getStringExtra("distance");
 
         vetname.setText(name);
-        status.setText(breed_pet);
-        breed.setText(breed_pet);
-        gender.setText(gender_pet);
-        age.setText(age_pet);
-        date.setText(date_post);
+        status.setText(address);
+        breed.setText(website);
+        gender.setText(phone);
+        age.setText(distance);
 
 
         Glide.with(this)
