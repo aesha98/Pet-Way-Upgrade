@@ -197,24 +197,24 @@ public class NearVetActivity extends AppCompatActivity {
         });
     }
 
-        private void getVetInfo (String placeid, PlacesClient placesClient)
-        {
-            List<Place.Field> placeFields = Arrays.asList(Place.Field.PHONE_NUMBER);
-            FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeid, placeFields);
+    private void getVetInfo (String placeid, PlacesClient placesClient)
+    {
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.PHONE_NUMBER);
+        FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeid, placeFields);
 
-            placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
-                Place place = response.getPlace();
-                String phoneNumber = place.getPhoneNumber();
-                //Add the places to your list
-                Vet vet = new Vet(place.getName(), place.getAddress(), place.getPhoneNumber());
-                vetList.add(vet);
-                Log.i("I", "Place phone number: " + phoneNumber);
-            }).addOnFailureListener((exception) -> {
-                if (exception instanceof ApiException) {
-                    ApiException apiException = (ApiException) exception;
-                    Log.e("TAG", "Place not found: " + apiException.getStatusCode());
-                }
-            });
-        }
+        placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            String phoneNumber = place.getPhoneNumber();
+            //Add the places to your list
+            Vet vet = new Vet(place.getName(), place.getAddress(), place.getPhoneNumber());
+            vetList.add(vet);
+            Log.i("I", "Place phone number: " + phoneNumber);
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+                Log.e("TAG", "Place not found: " + apiException.getStatusCode());
+            }
+        });
+    }
     }
 
